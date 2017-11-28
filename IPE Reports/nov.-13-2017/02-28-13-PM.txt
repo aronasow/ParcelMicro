@@ -1,0 +1,40 @@
+
+2017-11-13T14:28:15+0100 - Completed loading IPE.
+
+
+2017-11-13T14:29:09+0100 - Programming...
+2017-11-13T14:29:09+0100 - PICkit3PlatformTool	 Device:PIC18F26K22	 Checksum: 3D4
+2017-11-13T14:29:18+0100 - Programming failed
+2017-11-13T14:29:18+0100 - Pass Count: 18
+
+
+2017-11-13T14:32:25+0100 - Programming...
+2017-11-13T14:32:25+0100 - PICkit3PlatformTool	 Device:PIC18F26K22	 Checksum: 3D4
+2017-11-13T14:32:34+0100 - Programming failed
+2017-11-13T14:32:34+0100 - Pass Count: 18
+
+
+2017-11-13T14:32:57+0100 - Loading hex file. Please wait...
+2017-11-13T14:32:58+0100 - Hex file loaded successfully.
+
+
+2017-11-13T14:32:58+0100 - Hex file loaded from: D:\Cours\parcelProtect\ParcelProtect.X\dist\PIC18F26K22\production\ParcelProtect.X.production.hex
+2017-11-13T14:33:01+0100 - Programming...
+2017-11-13T14:33:01+0100 - PICkit3PlatformTool	 Device:PIC18F26K22	 Checksum: 4D46
+2017-11-13T14:33:10+0100 - Programming failed
+2017-11-13T14:33:10+0100 - Pass Count: 18
+
+
+2017-11-13T14:33:17+0100 - Erasing...
+2017-11-13T14:33:26+0100 - Erase device failed
+
+
+2017-11-13T14:35:33+0100 - Erasing...
+2017-11-13T14:35:43+0100 - Erase device failed
+
+
+2017-11-13T14:37:26+0100 - Programming...
+2017-11-13T14:37:26+0100 - PICkit3PlatformTool	 Device:PIC18F26K22	 Checksum: 4D46
+2017-11-13T14:37:35+0100 - Programming failed
+2017-11-13T14:37:35+0100 - Pass Count: 18
+

@@ -1,8 +1,5 @@
 // PIC18F26K22 Configuration Bit Settings
 
-
-// PIC18F26K22 Configuration Bit Settings
-
 // 'C' source line config statements
 // CONFIG1H
 #pragma config FOSC = INTIO67   // Oscillator Selection bits (Internal oscillator block)
@@ -95,14 +92,6 @@
 /* User Global Variable Declaration                                           */
 /**************************/
 
-/**
-  Section: Macro Declarations
- */
-
-/**
-  Section: Global Variables
- */
-
 /**************************/
 /* Initialize I/O and Peripherals for application */
 /**************************/
@@ -172,22 +161,14 @@ void UART_Read_Text(char *Output, unsigned int length)
 }
 
 
-
 /**************************/
 /* Main Program                                                               */
 /**************************/
 
 void main(void) {
     //unsigned int test;
-    
-    
     unsigned char test[3];
-    /*
-    test[0] = 'a';
-    test[1] = 'b';
-    test[2] = '\0';
-    */
-    
+
     /* Configure the oscillator for the device */
     ConfigureOscillator();
 
@@ -210,32 +191,6 @@ void main(void) {
         for(unsigned int i=0; i<50000; i++) ;
         UART_Write(0x00);
         for(unsigned int i=0; i<50000; i++) ;
-        
-        
-        
-        /*UART_Write(test);
-        for(unsigned int i=0; i<50000; i++) ;
-         
-        
-        /*for(unsigned int i=0; i<50000; i++)  ;
-            
-        if (test == 0x31){
-            UART_Write(0x31);
-            for(unsigned int i=0; i<50000; i++)  ;
-        }
-        else{   
-            UART_Write(0x32);
-            for(unsigned int i=0; i<50000; i++)  ; 
-        }*/
-    
-/*
-        if (INTCON & 2) {
-            LATC = cpt++;
-            INTCON&=~2;
-            cpt--;
-            if (!cpt)            {
-                cpt = 20;
-            }
-        }*/
+      
     }
 }

@@ -97,9 +97,9 @@
 /**************************/
 void init(void) {
     //init PORTS
-    TRISA = 0b00000000;        //    all outputs
-    TRISB = 0b11000000;        //    all outputs, except RX on RB7 & TX on RB6
-    TRISC = 0b11000000;        //    all outputs, except RX on RC7 & TX on RC6
+    TRISA = 0b00100000;        //    all outputs, except RA5(SS1 for SPI)
+    TRISB = 0b11000010;        //    all outputs, except RX on RB7 & TX on RB6
+    TRISC = 0b11010000;        //    all outputs, except RX on RC7 & TX on RC6 & RC4 (SDI1 for SPI)
 };
     
     
@@ -116,6 +116,18 @@ void init_eusart(void) {
     
     // enable EUSART1 receive interrupt
     PIE1bits.RC1IE = 1;
+}
+
+/**************************/
+/* SPI init                                                                  */
+/**************************/
+void init_spi(void) {
+    //init SPI
+    SSPxSTAT.bits.SMP = 1;
+    SSPxSTAT.bits.CKE = 1;
+    SSPCON1 = 0x20; // 00100000
+    
+    PIR1bits.SSPIF = 0;
 }
 
 void init_Timer(void)
@@ -160,6 +172,37 @@ void UART_Read_Text(char *Output, unsigned int length)
         Output[i] = UART_Read();
 }
 
+/**************************/
+/* EEPROM functions                                                               */
+/**************************/
+
+unsigned char spiRead(){
+    SSPBUF = data_;
+    while(!PIR1bits.SSPIF);
+    PIR1bits.SSPIF = 0;
+    return SSPBUF;
+}
+
+unsigned char spiWrite(unsigned char data_){
+    SSPBUF = data_;
+    while(!PIR1bits.SSPIF);
+    PIR1bits.SSPIF = 0;
+    return SSPBUF;
+}
+
+unsigned char EReadStatus () {
+    unsigned char c;
+    spiWrite(0x05);
+    c = spiRead();
+    return c;
+}
+
+unsigned char EWriting() {
+    unsigned char c;
+    spiWrite(0x05);
+    c = spiRead();
+    return c & 1;
+}
 
 /**************************/
 /* Main Program                                                               */
@@ -182,15 +225,22 @@ void main(void) {
     init_eusart();
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
+    
+    /* Initialize SPI */
+    init_spi();
 
     while(1) { 
-        
+       /* TEST EUSART */
+        /*
         UART_Read_Text(test, 3);
         for(unsigned int i=0; i<50000; i++) ;
         UART_Write_Text(test);
         for(unsigned int i=0; i<50000; i++) ;
         UART_Write(0x00);
         for(unsigned int i=0; i<50000; i++) ;
-      
+        */
+       
+        
+        
     }
 }

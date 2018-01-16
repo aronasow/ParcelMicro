@@ -2,7 +2,8 @@
 # 1 "main.c"
 
 
-# 8
+
+
 #pragma config FOSC = INTIO67
 #pragma config PLLCFG = OFF
 #pragma config PRICLKEN = ON
@@ -8271,15 +8272,15 @@ void ConfigureOscillator(void);
 # 13 "user.h"
 void InitApp(void);
 
-# 109 "main.c"
+# 98 "main.c"
 void init(void) {
 
-TRISA = 0b00000000;
-TRISB = 0b11000000;
-TRISC = 0b11000000;
+TRISA = 0b00100000;
+TRISB = 0b11000010;
+TRISC = 0b11010000;
 };
 
-# 121
+# 110
 void init_eusart(void) {
 
 BAUDCON1 = 0b00000000;
@@ -8289,6 +8290,20 @@ SPBRG1 = 0b00011001;
 
 
 PIE1bits.RC1IE = 1;
+}
+
+# 127
+void init_spi(void) {
+
+
+SSP1STATbits.SMP = 1;
+SSP1STATbits.CKE = 1;
+SSPCON1 = 0x20;
+
+PIR1bits.SSPIF = 0;
+
+LATCbits.LATC2 = 1;
+LATCbits.LATC3 = 0;
 }
 
 void init_Timer(void)
@@ -8315,7 +8330,7 @@ for (unsigned int i=0;text[i]!='\0';i++)
 UART_Write(text[i]);
 }
 
-# 161
+# 169
 unsigned char UART_Read()
 {
 if(PIR1bits.RC1IF) ;
@@ -8324,19 +8339,65 @@ return RCREG1;
 
 void UART_Read_Text(char *Output, unsigned int length)
 {
-int i;
-for (int i=0;i<length;i++)
+for (int unsigned i=0;i<length;i++)
 Output[i] = UART_Read();
 }
 
-# 180
+
+
+
+unsigned char spiReadWrite(unsigned char data){
+SSPBUF = data;
+while(!SSP1STATbits.BF);
+return SSPBUF;
+}
+
+unsigned char EReadData (unsigned long addr) {
+unsigned char data;
+
+LATCbits.LATC2 = 0;
+
+spiReadWrite(0x03);
+
+spiReadWrite(addr>>16);
+spiReadWrite(addr>>8);
+spiReadWrite((unsigned char) addr);
+
+data = spiReadWrite(0xFF);
+
+LATCbits.LATC2 = 1;
+
+return data;
+}
+
+void EWriteData (unsigned char data, unsigned long addr) {
+unsigned char poubelle;
+
+LATCbits.LATC2 = 0;
+poubelle = spiReadWrite(0x06);
+LATCbits.LATC3 = 1;
+LATCbits.LATC2 = 1;
+
+LATCbits.LATC2 = 0;
+
+poubelle = spiReadWrite(0x03);
+
+poubelle = spiReadWrite(addr>>16);
+poubelle = spiReadWrite(addr>>8);
+poubelle = spiReadWrite((unsigned char) addr);
+
+poubelle = spiReadWrite(data);
+LATCbits.LATC2 = 1;
+}
+
+# 232
 void main(void) {
-
-
 
 unsigned char test[3];
 
-# 192
+
+
+
 ConfigureOscillator();
 
 
@@ -8350,7 +8411,11 @@ init_eusart();
 
 
 
+
+init_spi();
+
 while(1) {
+
 
 UART_Read_Text(test, 3);
 for(unsigned int i=0; i<50000; i++) ;
@@ -8359,6 +8424,6 @@ for(unsigned int i=0; i<50000; i++) ;
 UART_Write(0x00);
 for(unsigned int i=0; i<50000; i++) ;
 
-# 240
+# 272
 }
 }

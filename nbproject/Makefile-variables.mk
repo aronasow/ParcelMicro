@@ -1,0 +1,13 @@
+#
+# Generated - do not edit!
+#
+# NOCDDL
+#
+CND_BASEDIR=`pwd`
+# PIC18F26K22 configuration
+CND_ARTIFACT_DIR_PIC18F26K22=dist/PIC18F26K22/production
+CND_ARTIFACT_NAME_PIC18F26K22=ParcelMicro.production.hex
+CND_ARTIFACT_PATH_PIC18F26K22=dist/PIC18F26K22/production/ParcelMicro.production.hex
+CND_PACKAGE_DIR_PIC18F26K22=${CND_DISTDIR}/PIC18F26K22/package
+CND_PACKAGE_NAME_PIC18F26K22=parcelmicro.tar
+CND_PACKAGE_PATH_PIC18F26K22=${CND_DISTDIR}/PIC18F26K22/package/parcelmicro.tar

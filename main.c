@@ -121,13 +121,20 @@ void init_eusart(void) {
 /**************************/
 /* SPI init                                                                  */
 /**************************/
+#define CS LATCbits.LATC2
+#define WP LATCbits.LATC3
+
 void init_spi(void) {
     //init SPI
-    SSPxSTAT.bits.SMP = 1;
-    SSPxSTAT.bits.CKE = 1;
+        
+    SSP1STATbits.SMP = 1;
+    SSP1STATbits.CKE = 1;
     SSPCON1 = 0x20; // 00100000
     
     PIR1bits.SSPIF = 0;
+    
+    CS = 1;
+    WP = 0;
 }
 
 void init_Timer(void)
@@ -167,41 +174,55 @@ unsigned char UART_Read()
 
 void UART_Read_Text(char *Output, unsigned int length)
 {
-    int i;
-    for (int i=0;i<length;i++)
+    for (int unsigned i=0;i<length;i++)
         Output[i] = UART_Read();
 }
 
 /**************************/
 /* EEPROM functions                                                               */
 /**************************/
-
-unsigned char spiRead(){
-    SSPBUF = data_;
-    while(!PIR1bits.SSPIF);
-    PIR1bits.SSPIF = 0;
+unsigned char spiReadWrite(unsigned char data){
+    SSPBUF = data;
+    while(!SSP1STATbits.BF);
     return SSPBUF;
 }
 
-unsigned char spiWrite(unsigned char data_){
-    SSPBUF = data_;
-    while(!PIR1bits.SSPIF);
-    PIR1bits.SSPIF = 0;
-    return SSPBUF;
+unsigned char EReadData (unsigned long addr) {
+    unsigned char data;
+    
+    CS = 0;
+    // send READ instruction
+    spiReadWrite(0x03); 
+    // send address in 24 bits
+    spiReadWrite(addr>>16);
+    spiReadWrite(addr>>8);
+    spiReadWrite((unsigned char) addr);
+    // read the data
+    data = spiReadWrite(0xFF); //Data 
+    
+    CS = 1;
+ 
+    return data;
 }
 
-unsigned char EReadStatus () {
-    unsigned char c;
-    spiWrite(0x05);
-    c = spiRead();
-    return c;
-}
-
-unsigned char EWriting() {
-    unsigned char c;
-    spiWrite(0x05);
-    c = spiRead();
-    return c & 1;
+void EWriteData (unsigned char data, unsigned long addr) {
+    unsigned char poubelle;
+    
+    CS = 0;
+    poubelle = spiReadWrite(0x06);
+    WP = 1;    
+    CS = 1;
+    
+    CS = 0;
+    // send WRITE instruction
+    poubelle = spiReadWrite(0x03);
+    // send address in 24 bits
+    poubelle = spiReadWrite(addr>>16);
+    poubelle = spiReadWrite(addr>>8);
+    poubelle = spiReadWrite((unsigned char) addr);
+    //send the data
+    poubelle = spiReadWrite(data);  
+    CS = 1;
 }
 
 /**************************/
@@ -211,6 +232,8 @@ unsigned char EWriting() {
 void main(void) {
     //unsigned int test;
     unsigned char test[3];
+    
+    unsigned char data;
 
     /* Configure the oscillator for the device */
     ConfigureOscillator();
@@ -231,16 +254,20 @@ void main(void) {
 
     while(1) { 
        /* TEST EUSART */
-        /*
+        
         UART_Read_Text(test, 3);
         for(unsigned int i=0; i<50000; i++) ;
         UART_Write_Text(test);
         for(unsigned int i=0; i<50000; i++) ;
         UART_Write(0x00);
         for(unsigned int i=0; i<50000; i++) ;
-        */
+        
        
-        
-        
+        /*
+        EWriteData('a', 0x000000);
+        for(unsigned int i=0; i<50000; i++) ;
+        data = EReadData(0x000000);
+        for(unsigned int i=0; i<50000; i++) ;
+         */
     }
 }
